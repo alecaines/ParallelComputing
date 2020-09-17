@@ -35,7 +35,7 @@ void* find_pi(void* number){
 }
 
 int main(int argc, char** argv){
-    //struct timespec start, end; //structs used for timing purposes, it has two memebers, a tv_sec which is the current second, and the tv_nsec which is the current nanosecond.
+    struct timespec start, end; //structs used for timing purposes, it has two memebers, a tv_sec which is the current second, and the tv_nsec which is the current nanosecond.
     
     if(argc>=2){
 	    TERMS = strtoull(argv[1], NULL, 10);
@@ -44,12 +44,10 @@ int main(int argc, char** argv){
 
     pthread_t* handlers = malloc(PARTITIONS * sizeof(pthread_t));
     results = malloc(PARTITIONS * sizeof(double));
-    //PI = malloc(sizeof(int64_t));
-    //PI = 0;
 
-    //double time_diff;
+    double time_diff;
     
-    //clock_gettime(CLOCK_MONOTONIC, &start); //Start the clock!
+    clock_gettime(CLOCK_MONOTONIC, &start); //Start the clock!
       
     //creating the threads
     for(uintptr_t i = 0; i < PARTITIONS; i++){
@@ -66,12 +64,12 @@ int main(int argc, char** argv){
 	    PI+=results[i];
     }
 
-    //clock_gettime(CLOCK_MONOTONIC, &end);   //Stops the clock!
+    clock_gettime(CLOCK_MONOTONIC, &end);   //Stops the clock!
 
-    //time_diff = (end.tv_sec - start.tv_sec); //Difference in seconds
-    //time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
+    time_diff = (end.tv_sec - start.tv_sec); //Difference in seconds
+    time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
 
-    //printf("The time taken is %f \n", time_diff);
+    printf("The time taken is %f \n", time_diff);
     PI*=4;
 
     printf("Parallel approximation of PI %.20f\n", PI);

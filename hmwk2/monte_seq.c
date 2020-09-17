@@ -34,24 +34,24 @@ double monte_find_pi(){
 }
 
 int main(int argc, char** argv){
-    //struct timespec start, end; //structs used for timing purposes, it has two memebers, a tv_sec which is the current second, and the tv_nsec which is the current nanosecond.
+    struct timespec start, end; //structs used for timing purposes, it has two memebers, a tv_sec which is the current second, and the tv_nsec which is the current nanosecond.
     if(argc>=2){
 	    TERMS = strtoull(argv[1], NULL, 10);
     }
 
 
-    //int64_t time_diff;
+    double time_diff;
     
-    //clock_gettime(CLOCK_REALTIME, &start); //Start the clock!
+    clock_gettime(CLOCK_REALTIME, &start); //Start the clock!
     xs = malloc(TERMS * sizeof(double));
     ys = malloc(TERMS * sizeof(double));
     double pi = monte_find_pi();
-    //clock_gettime(CLOCK_REALTIME, &end);   //Stops the clock!
+    clock_gettime(CLOCK_REALTIME, &end);   //Stops the clock!
     
-    //time_diff = (end.tv_sec - start.tv_sec); //Difference in seconds
-    //time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
+    time_diff = (end.tv_sec - start.tv_sec); //Difference in seconds
+    time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
 
-    //printf("The time taken is %f \n", time_diff);
+    printf("The time taken is %f \n", time_diff);
     printf("Pi is %.20f\n", pi);
 
 }
