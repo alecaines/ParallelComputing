@@ -24,17 +24,13 @@ double monte_find_pi(){
     }
     
     double circle_count = 0;
-    double square_count = 0;
     for(int64_t i =0; i< TERMS; i++){
         if (pow(xs[i], 2) + pow(ys[i], 2) < 1){
 		circle_count+=1;
 	}
-	else{
-		square_count+=1;
-	}
     }
 
-    return circle_count/square_count; 
+   return 4*circle_count/(TERMS); 
 }
 
 int main(int argc, char** argv){
@@ -51,7 +47,7 @@ int main(int argc, char** argv){
     ys = malloc(TERMS * sizeof(double));
     double pi = monte_find_pi();
     //clock_gettime(CLOCK_REALTIME, &end);   //Stops the clock!
-
+    
     //time_diff = (end.tv_sec - start.tv_sec); //Difference in seconds
     //time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
 

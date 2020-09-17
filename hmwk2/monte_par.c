@@ -52,7 +52,7 @@ int main(int argc, char** argv){
     }
 
 
-    int64_t time_diff;
+    double time_diff;
     
     clock_gettime(CLOCK_MONOTONIC, &start); //Start the clock!
     pthread_t* handlers = malloc(PARTITIONS* sizeof(pthread_t));
@@ -70,17 +70,17 @@ int main(int argc, char** argv){
     }
 
     for(int i =0; i < PARTITIONS; i++){
-	    printf("%f\n", results[i]);
 	    PI+=results[i];
     }
                                   
     clock_gettime(CLOCK_MONOTONIC, &end);   //Stops the clock!
-
+    free(handlers);
+    free(results);
     time_diff = (end.tv_sec - start.tv_sec); //Difference in seconds
     time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
 
     PI = PI/PARTITIONS;
-    printf("The time taken is %" PRId64 "\n", time_diff);
+    printf("The time taken is %f\n", time_diff);
     printf("Pi is %.20f\n", PI);
 
 }
