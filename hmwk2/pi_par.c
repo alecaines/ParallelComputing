@@ -9,7 +9,7 @@
 #include <math.h>
 #include <pthread.h>
 
-int64_t TERMS = 10;
+int64_t TERMS = 1000000;
 int64_t PARTITIONS = 10;
 double PI=0;
 double* results;
@@ -36,7 +36,6 @@ void* find_pi(void* number){
 
 int main(int argc, char** argv){
     struct timespec start, end; //structs used for timing purposes, it has two memebers, a tv_sec which is the current second, and the tv_nsec which is the current nanosecond.
-    
     if(argc>=2){
 	    TERMS = strtoull(argv[1], NULL, 10);
 	    PARTITIONS = strtoull(argv[2], NULL, 10);
