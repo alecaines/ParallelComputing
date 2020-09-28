@@ -2,6 +2,7 @@
 Example code for Pi using some inline assembly.
 Serves to demonstrate how to time code!
 */
+
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,36 +11,48 @@ Serves to demonstrate how to time code!
 #include <math.h>
 #include <pthread.h>
 
-int64_t TERMS = 10000000;
+int64_t TARGET = 10000000;
 int64_t PARTITIONS = 10;
-double* xs;
-double* ys;
-double PI = 0;
-double* results;
+double* factors;
 
-void* monte_find_pi(void* number){
+int is_prime(int64_t alleged){
+	if(alleged == 1){
+		return 0;
+	}
+
+	for(int64_t j=2; j < alleged; j++){
+		if(alleged % j == 0){
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+void* find_factors(void* number){
     //C doesn't actually have Pi as a constant, but...
     //Most modern CPUs actually have an instruction to just load Pi into a register!
     //Some inline assembly here. This should work for all versions of GCC...
 
     uintptr_t partition = (uintptr_t) number;
-    uint64_t block = TERMS/PARTITIONS;
+    uint64_t block = TARGET/PARTITIONS;
     uint64_t start = block * partition;  
     uint64_t end = block*(partition+1);
 
-    for(int64_t i = start; i< end; i++){
-        xs[i] = 2*((double) rand() / (double) RAND_MAX) - 1;
-        ys[i] = 2*((double) rand() / (double) RAND_MAX) - 1;
-    }
-    
-    double pi_count = 0;
-    for(int64_t i = start; i< end; i++){
-        if (pow(xs[i], 2) + pow(ys[i], 2) <= 1){
-		pi_count+=1;
-	}
+    for(int64_t i = start; i< end; i+=2){
+	    if(is_prime(i) == 1){
+		    for(int64_t k = i; k < TARGET; k+=2){
+			    if(k * i == TARGET && is_prime(k))}{
+				    factors[0] = i;
+				    factors[1] = K;
+
+				    return;
+			    }
+		    }
+	    }
+ 
     }
 
-    results[partition] = 4*pi_count/(end-start);
 
     return NULL;
 }
@@ -47,10 +60,10 @@ void* monte_find_pi(void* number){
 int main(int argc, char** argv){
     struct timespec start, end; //structs used for timing purposes, it has two memebers, a tv_sec which is the current second, and the tv_nsec which is the current nanosecond.
     if(argc==2){
-	    TERMS = strtoull(argv[1], NULL, 10);
+	    TARGET = strtoull(argv[1], NULL, 10);
     }
     if(argc==3){
-	    TERMS = strtoull(argv[1], NULL, 10);
+	    TARGET = strtoull(argv[1], NULL, 10);
 	    PARTITIONS = strtoull(argv[2], NULL, 10);
     }
 
@@ -59,31 +72,24 @@ int main(int argc, char** argv){
     
     clock_gettime(CLOCK_MONOTONIC, &start); //Start the clock!
     pthread_t* handlers = malloc(PARTITIONS* sizeof(pthread_t));
-    results = malloc(PARTITIONS*sizeof(double));
-
-    xs = malloc(TERMS * sizeof(double));
-    ys = malloc(TERMS * sizeof(double));
+    factors = malloc(PARTITIONS*sizeof(double));
 
     for(int64_t i = 0; i < PARTITIONS; i++){
-	    pthread_create(&handlers[i], NULL, monte_find_pi, (void*) i);
+	    pthread_create(&handlers[i], NULL, find_factors, (void*) i);
     }
 
     for(int64_t i = 0; i < PARTITIONS; i++){
 	    pthread_join(handlers[i], NULL);
     }
 
-    for(int i =0; i < PARTITIONS; i++){
-	    PI+=results[i];
-    }
-                                  
     clock_gettime(CLOCK_MONOTONIC, &end);   //Stops the clock!
-    free(handlers);
-    free(results);
     time_diff = (end.tv_sec - start.tv_sec); //Difference in seconds
     time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
 
     PI = PI/PARTITIONS;
     printf("The time taken is %f\n", time_diff);
-    printf("Pi is %.20f\n", PI);
+    printf("%" PRId64 " * %" PRId64 " = %" PRId64 "\n", factors[0], factors[1], TARGET);
 
+    free(handlers);
+    free(factors);
 }
