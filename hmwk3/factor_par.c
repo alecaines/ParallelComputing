@@ -14,7 +14,7 @@ Serves to demonstrate how to time code!
 int64_t TARGET = 10000000;
 int64_t PARTITIONS = 10;
 int64_t* factors;
-
+int SUCCESS = 0;
 int is_prime(int64_t alleged){
 	if(alleged == 1){
 		return 0;
@@ -31,6 +31,10 @@ int is_prime(int64_t alleged){
 
 void* find_factors(void* number){
 
+    if(SUCCESS == 1){
+	    return NULL;
+    }
+
     uintptr_t partition = (uintptr_t) number;
     uint64_t block = TARGET/PARTITIONS;
     uint64_t start = block * partition;  
@@ -38,14 +42,11 @@ void* find_factors(void* number){
 
     for(int64_t i = start; i< end; i+=2){
 	    if(is_prime(i) == 1){
-		    printf("hey\n");
-		    printf("%" PRId64 "\n", i);
 		    for(int64_t k = i; k < TARGET; k+=2){
-			    printf("wassup\n");
-			    printf("%" PRId64 " % " PRId64 "\n", i, k);
 			    if(k * i == TARGET && is_prime(k)){
 				    factors[0] = i;
 				    factors[1] = k;
+				    SUCCESS = 1;
 
 				    return NULL;
 			    }
