@@ -18,7 +18,34 @@ void* Create(){
 }
 
 int Insert(void* head, uint32_t value, uint32_t loc){
-	struct Node* node = malloc(sizeof(struct Node)); //why am I instantiating this like this
+	struct Node* node = (struct Node*)malloc(sizeof(struct Node)); //why am I instantiating this like this
+	//node -> value = (uint32_t)malloc(sizeof(uint32_t));
+	node -> next = head;
+
+	if(loc == -1){
+		//tbd
+		while(node -> next != NULL){
+			node = node -> next;
+		}
+		node -> value = value;
+		node -> next = NULL;
+		//node ->  prev = ???
+		printf("%" PRIu32 "\n", (*node).value); 
+		return 0;
+	}
+	else{
+		uint32_t count = 0;
+		while(count < loc){
+			printf("%" PRIu32 "\n", (*node).value); 
+			node -> value = node -> next -> value;
+			node -> next = node -> next -> next;
+			node -> prev = node;
+			count+=1;
+		}
+		node -> value = value;
+	}
+
+	/*
 	if(loc == -1){
 		while(node -> next != NULL){
 			node = node -> next;
@@ -32,7 +59,6 @@ int Insert(void* head, uint32_t value, uint32_t loc){
 	}
 	else{
 		struct Node* insert = (struct Node*)malloc(sizeof(struct Node));
-		//node = head -> next;
 		uint64_t i = 0;
 
 		while(i != loc){
@@ -44,6 +70,7 @@ int Insert(void* head, uint32_t value, uint32_t loc){
 		insert -> next = node;
 		insert -> value = value;
 	}
+	*/
 	return 1;
 }
 
@@ -52,6 +79,19 @@ int Delete(void* head, uint32_t item){
 }
 
 void* Find(void* head, uint32_t value){
+	struct Node* node = (struct Node*)malloc(sizeof(struct Node)); //why am I instantiating this like this
+	//node -> value = (uint32_t)malloc(sizeof(uint32_t));
+	node -> next = head;
+	
+	while(node -> next != NULL){
+		if(node -> value == value){
+			uint64_t *p = node -> value;
+			return p;
+		}
+		else{
+			node = node -> next;
+		}
+	}
 	return NULL;
 }
 

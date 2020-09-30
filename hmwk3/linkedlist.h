@@ -2,7 +2,7 @@
 struct Node{
 	struct Node* prev;
 	struct Node* next;
-	uint64_t value;
+	uint32_t value;
 };
 
 //This function constructs and returns a pointer to the head of the linkedlist
