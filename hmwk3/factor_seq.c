@@ -10,10 +10,11 @@ Serves to demonstrate how to time code!
 #include <time.h>
 #include <math.h>
 
-int64_t TARGET = 64367;
+int64_t TARGET = 646367;
 int64_t* factors;
 
 int is_prime(int64_t alleged){
+	//printf("%" PRId64 "\n", alleged);
 	if(alleged == 1){
 		return 0;
 	}
@@ -29,7 +30,8 @@ int is_prime(int64_t alleged){
 void find_factors(){
     for(int64_t i =1; i< TARGET; i+=2){
 	    if(is_prime(i) == 1){
-		for(int64_t k = i; k < TARGET; k+=2){
+		for(int64_t k = i; k < TARGET/2; k+=2){
+			//printf("%" PRId64 " and %" PRId64 "\n", i, k);
 			if(k * i == TARGET && is_prime(k)){
 				factors[0] = i;
 				factors[1] = k;

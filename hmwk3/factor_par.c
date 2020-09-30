@@ -11,7 +11,7 @@ Serves to demonstrate how to time code!
 #include <math.h>
 #include <pthread.h>
 
-int64_t TARGET = 10000000;
+int64_t TARGET = 646367;
 int64_t PARTITIONS = 10;
 int64_t* factors;
 int SUCCESS = 0;
@@ -38,11 +38,13 @@ void* find_factors(void* number){
     uintptr_t partition = (uintptr_t) number;
     uint64_t block = TARGET/PARTITIONS;
     uint64_t start = block * partition;  
+    start = (start > 0) ? start : 1;
     uint64_t end = block*(partition+1);
 
     for(int64_t i = start; i< end; i+=2){
 	    if(is_prime(i) == 1){
 		    for(int64_t k = i; k < TARGET; k+=2){
+			    //printf("%" PRId64 "\n", i);
 			    if(k * i == TARGET && is_prime(k)){
 				    factors[0] = i;
 				    factors[1] = k;
