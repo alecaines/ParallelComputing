@@ -11,23 +11,10 @@ Serves to demonstrate how to time code!
 #include <math.h>
 #include <pthread.h>
 
-int64_t TARGET = 646367;
-int64_t PARTITIONS = 10;
-int64_t* factors;
+uint64_t TARGET = 646367;
+uint64_t PARTITIONS = 10;
+uint64_t* factors;
 int SUCCESS = 0;
-int is_prime(int64_t alleged){
-	if(alleged == 1){
-		return 0;
-	}
-
-	for(int64_t j=2; j < alleged; j++){
-		if(alleged % j == 0){
-			return 0;
-		}
-	}
-
-	return 1;
-}
 
 void* find_factors(void* number){
 
@@ -38,23 +25,21 @@ void* find_factors(void* number){
     uintptr_t partition = (uintptr_t) number;
     uint64_t block = TARGET/PARTITIONS;
     uint64_t start = block * partition;  
-    start = (start > 0) ? start : 1;
+    start = (start > 0) ? start : 3;
     uint64_t end = block*(partition+1);
 
-    for(int64_t i = start; i< end; i+=2){
-	    if(is_prime(i) == 1){
-		    for(int64_t k = i; k < TARGET; k+=2){
-			    //printf("%" PRId64 "\n", i);
-			    if(k * i == TARGET && is_prime(k)){
-				    factors[0] = i;
-				    factors[1] = k;
-				    SUCCESS = 1;
+    for(uint64_t i = start; i< end; i+=2){
+	if(SUCCESS == 1){
+	       return NULL;
+	}
+	else{
+		if(TARGET%i==0){
+			factors[0] = i;
+			factors[1] = TARGET/i;
+			SUCCESS = 1;
+		}
+	}
 
-				    return NULL;
-			    }
-		    }
-	    }
- 
     }
 
 
@@ -72,20 +57,20 @@ int main(int argc, char** argv){
     }
 
     if(TARGET % 3 == 0){ 
-	    int64_t div = TARGET / 3;
-	    printf("%d * %" PRId64 " = %" PRId64 "\n", 3, div, TARGET);
+	    uint64_t div = TARGET / 3;
+	    printf("%d * %" PRIu64 " = %" PRIu64 "\n", 3, div, TARGET);
     }
     else if(TARGET % 5 == 0){
-	    int64_t div = TARGET / 5;
-	    printf("%d * %" PRId64 " = %" PRId64 "\n", 5, div, TARGET);
+	    uint64_t div = TARGET / 5;
+	    printf("%d * %" PRIu64 " = %" PRIu64 "\n", 5, div, TARGET);
     }
     else if(TARGET % 2 == 0){
-	    int64_t div = TARGET / 2;
-	    printf("%d * %" PRId64 " = %" PRId64 "\n", 2, div, TARGET);
+	    uint64_t div = TARGET / 2;
+	    printf("%d * %" PRIu64 " = %" PRIu64 "\n", 2, div, TARGET);
     }
     else if(TARGET % 7 == 0){
-	    int64_t div = TARGET / 7;
-	    printf("%d * %" PRId64 " = %" PRId64 "\n", 7, div, TARGET);
+	    uint64_t div = TARGET / 7;
+	    printf("%d * %" PRIu64 " = %" PRIu64 "\n", 7, div, TARGET);
     }
     else{
 
@@ -95,11 +80,11 @@ int main(int argc, char** argv){
 	    pthread_t* handlers = malloc(PARTITIONS* sizeof(pthread_t));
 	    factors = malloc(PARTITIONS*sizeof(double));
 
-	    for(int64_t i = 0; i < PARTITIONS; i++){
+	    for(uint64_t i = 0; i < PARTITIONS; i++){
 		    pthread_create(&handlers[i], NULL, find_factors, (void*) i);
 	    }
 
-	    for(int64_t i = 0; i < PARTITIONS; i++){
+	    for(uint64_t i = 0; i < PARTITIONS; i++){
 		    pthread_join(handlers[i], NULL);
 	    }
 
@@ -108,7 +93,7 @@ int main(int argc, char** argv){
 	    time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
 
 	    printf("The time taken is %f\n", time_diff);
-	    printf("%" PRId64 " * %" PRId64 " = %" PRId64 "\n", factors[0], factors[1], TARGET);
+	    printf("%" PRIu64 " * %" PRIu64 " = %" PRIu64 "\n", factors[0], factors[1], TARGET);
 
 	    free(handlers);
 	    free(factors);

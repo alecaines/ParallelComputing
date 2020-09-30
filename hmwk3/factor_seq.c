@@ -10,38 +10,25 @@ Serves to demonstrate how to time code!
 #include <time.h>
 #include <math.h>
 
-int64_t TARGET = 646367;
-int64_t* factors;
+uint64_t TARGET = 646367;
+uint64_t* factors;
+int SUCCESS = 0;
 
-int is_prime(int64_t alleged){
-	//printf("%" PRId64 "\n", alleged);
-	if(alleged == 1){
-		return 0;
-	}
-
-	for(int64_t j=2; j < alleged; j++){
-		if(alleged % j == 0){
-			return 0;
-		}
-	}	
-	return 1;
-}
-
-void find_factors(){
-    for(int64_t i =1; i< TARGET; i+=2){
-	    if(is_prime(i) == 1){
-		for(int64_t k = i; k < TARGET/2; k+=2){
-			//printf("%" PRId64 " and %" PRId64 "\n", i, k);
-			if(k * i == TARGET && is_prime(k)){
-				factors[0] = i;
-				factors[1] = k;
-
-				return;
-			}
-		}
+void* find_factors(){
+    for(uint64_t i =3; i< TARGET; i+=2){
+	    if(SUCCESS == 1){
+		    return NULL;
+	    }
+	    else{
+		    if(TARGET%i==0){
+			    factors[0] = i;
+			    factors[1] = TARGET/i;
+			    SUCCESS = 1;
+		    }
 	    }
     }
 
+    return NULL;
 }
 
 
@@ -53,7 +40,7 @@ int main(int argc, char** argv){
 
 
     double time_diff;
-    factors = malloc(2*sizeof(int64_t));
+    factors = malloc(2*sizeof(uint64_t));
 
     clock_gettime(CLOCK_MONOTONIC, &start); //Start the clock!
     find_factors();
@@ -62,8 +49,8 @@ int main(int argc, char** argv){
     time_diff = (end.tv_sec - start.tv_sec); //Difference in seconds
     time_diff += (end.tv_nsec - start.tv_nsec) / 1e9; //Difference in nanoseconds
 
-    printf("The time taken is %f \n", time_diff);
-    printf("%" PRId64 " * %" PRId64 " = %" PRId64 "\n", factors[0], factors[1], TARGET);
+    printf("%" PRIu64 " * %" PRIu64 " = %" PRIu64 "\n", factors[0], factors[1], TARGET);
+    printf("Time: %f \n", time_diff);
 
     free(factors);
 }
