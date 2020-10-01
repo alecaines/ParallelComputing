@@ -9,14 +9,15 @@ int main(){
     Insert(head, 50, -1);
     Insert(head, 25, -1);
     Insert(head, 10, -1);
-    //Insert(head, 11, 2);
-    //Insert(head, 8, 1);
-    //Insert(head, 2, 0);
+    Insert(head, 11, 2);
+    Insert(head, 8, 1);
+    Insert(head, 2, 0);
 
     Display(head); //List should read [2,50,8,25,11,10]
     Delete(head, 2);
     Display(head); //[2,8,25,11,10]
     
+    //uint32_t target = 25;
     uint32_t target = 25;
     void* a = Find(head, target);
     if (a){
