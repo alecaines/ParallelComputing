@@ -19,7 +19,7 @@ void* Create(){
 
 int Insert(void* head, uint32_t value, uint32_t loc){
 	struct Node* node = (struct Node*)malloc(sizeof(struct Node)); //why am I instantiating this like this
-	//node -> value = (uint32_t)malloc(sizeof(uint32_t));
+	node -> value = malloc(sizeof(uint32_t));
 	node -> next = head;
 
 	if(loc == -1){
@@ -37,40 +37,17 @@ int Insert(void* head, uint32_t value, uint32_t loc){
 		uint32_t count = 0;
 		while(count < loc){
 			printf("%" PRIu32 "\n", (*node).value); 
+			 
+			/*
 			node -> value = node -> next -> value;
 			node -> next = node -> next -> next;
 			node -> prev = node;
+			*/
 			count+=1;
 		}
 		node -> value = value;
 	}
 
-	/*
-	if(loc == -1){
-		while(node -> next != NULL){
-			node = node -> next;
-			if(node -> next == NULL){
-				struct Node* newNode = malloc(sizeof(struct Node));
-				newNode -> prev = node;
-				newNode -> next = NULL;
-				newNode -> value = value;
-			}
-		}
-	}
-	else{
-		struct Node* insert = (struct Node*)malloc(sizeof(struct Node));
-		uint64_t i = 0;
-
-		while(i != loc){
-			node = node -> next;
-			i+=1;
-		}
-
-		insert -> prev = node -> prev;
-		insert -> next = node;
-		insert -> value = value;
-	}
-	*/
 	return 1;
 }
 
@@ -82,13 +59,15 @@ void* Find(void* head, uint32_t value){
 	struct Node* node = (struct Node*)malloc(sizeof(struct Node)); //why am I instantiating this like this
 	//node -> value = (uint32_t)malloc(sizeof(uint32_t));
 	node -> next = head;
-	
+	printf("------------------------\n");	
 	while(node -> next != NULL){
 		if(node -> value == value){
+			printf("%" PRIu32 "\n", (*node).value); 
 			uint64_t *p = node -> value;
 			return p;
 		}
 		else{
+			printf("%" PRIu32 "\n", (*node).value); 
 			node = node -> next;
 		}
 	}
