@@ -118,10 +118,15 @@ int main(int argc, char** argv){
     printf("Safe tests!\n");
     //"Safe" tests
     void* head = Create();
+    printf("Finished Creating\n");
     TestSafeInserts(head);
+    printf("Finished Safe Inserting\n");
     TestSafeDeletes(head, THREADCOUNT * OPS/2);
+    printf("Finisehd Safe Deletes\n");
     TestSafeDeletes(head, 0);
+    printf("Finisehd Safe Deletes again\n");
     Destroy(head);
+    printf("Finished Destroying\n");
 
     //"Unsafe" tests
     //These may cause crashes or other race-y things.

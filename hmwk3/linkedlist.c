@@ -23,14 +23,13 @@ void* Create(){
 
 int Insert(void* head, uint32_t value, uint32_t loc){
 	struct Node* node = (struct Node*)head; //why am I instantiating this like this
-	node -> value = malloc(sizeof(uint32_t));
 	if(loc == -1){
 		while(node -> next != NULL){
 			node = node -> next;
 		}
 
 		struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-		newNode -> value = malloc(sizeof(uint32_t));
+		//newNode -> value = malloc(sizeof(uint32_t));
 		newNode -> value = value;
 		newNode -> prev = node;
 		node -> next = newNode;	
@@ -46,7 +45,7 @@ int Insert(void* head, uint32_t value, uint32_t loc){
 		//printf("%" PRIu32 "\n", (*node).value); 
 		}
 		struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-		newNode -> value = malloc(sizeof(uint32_t));
+		//newNode -> value = malloc(sizeof(uint32_t));
 		newNode -> value = value;
 		newNode -> prev = node;
 		newNode -> next = node -> next;
@@ -58,7 +57,6 @@ int Insert(void* head, uint32_t value, uint32_t loc){
 
 int Delete(void* head, uint32_t loc){
 	struct Node* node = (struct Node*)head; //why am I instantiating this like this
-	node -> value = malloc(sizeof(uint32_t));
 	
 	uint32_t count = 0;	
 	while(count < loc){
@@ -72,7 +70,7 @@ int Delete(void* head, uint32_t loc){
 	subsequent = node -> next;
 	previous -> next = subsequent;
 	subsequent -> prev = previous;
-
+	free(node);
 	return 1;
 }
 
@@ -92,35 +90,92 @@ void* Find(void* head, uint32_t value){
 }
 
 int SafeInsert(void* head, uint32_t value, uint32_t loc){
-	struct Node* node = (struct Node*)head;
-	pthread_rwlock_t* lock = node -> lock;
+	struct Node* lock_node = (struct Node*)head;
+	pthread_rwlock_t* lock = lock_node -> lock;
 	pthread_rwlock_init(lock, NULL);
 	pthread_rwlock_wrlock(lock);
-		Insert(head, value, loc);
+
+	struct Node* node = (struct Node*)head; //why am I instantiating this like this
+	if(loc == -1){
+		while(node -> next != NULL){
+			node = node -> next;
+		}
+
+		struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+		//newNode -> value = malloc(sizeof(uint32_t));
+		newNode -> value = value;
+		newNode -> prev = node;
+		node -> next = newNode;	
+
+		//printf("%" PRIu32 "\n", (*node).value); 
+		return 0;
+	}
+	else{
+		uint32_t count = 0;
+		while(count < loc){
+			node = node -> next;
+			count+=1;
+		//printf("%" PRIu32 "\n", (*node).value); 
+		}
+		struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+		//newNode -> value = malloc(sizeof(uint32_t));
+		newNode -> value = value;
+		newNode -> prev = node;
+		newNode -> next = node -> next;
+		node -> next = newNode;
+	}
+
 	pthread_rwlock_unlock(lock);		
 
 	return 1;
 }
 
 int SafeDelete(void* head, uint32_t loc){
-	struct Node* node = (struct Node*)head;
-	pthread_rwlock_t* lock = node -> lock;
-	pthread_rwlock_init(lock, NULL);
+	struct Node* lock_node = (struct Node*)head;
+	pthread_rwlock_t* lock = lock_node -> lock;
 	pthread_rwlock_init(lock, NULL);
 	pthread_rwlock_wrlock(lock);
-		Delete(head, loc);
+
+	struct Node* node = (struct Node*)head; //why am I instantiating this like this
+	
+	uint32_t count = 0;	
+	while(count < loc){
+		node = node -> next;
+		count+=1;
+	}
+
+	struct Node* previous;
+	struct Node* subsequent;
+	previous = node -> prev;
+	subsequent = node -> next;
+	previous -> next = subsequent;
+	subsequent -> prev = previous;
+	free(node);
+
+
 	pthread_rwlock_unlock(lock);		
 
 	return 1;
 }
 
 void* SafeFind(void* head, uint32_t value){
-	struct Node* node = (struct Node*)head;
-	pthread_rwlock_t* lock = node -> lock;
-	pthread_rwlock_init(lock, NULL);
+	struct Node* lock_node = (struct Node*)head;
+	pthread_rwlock_t* lock = lock_node -> lock;
 	pthread_rwlock_init(lock, NULL);
 	pthread_rwlock_rdlock(lock);
-		Find(head, value);
+	
+	struct Node* node = (struct Node*)head; //why am I instantiating this like this
+	while(node != NULL){
+		if(node -> value == value){
+			uint32_t *p = malloc(sizeof(uint32_t));
+			*p = node -> value;
+			return p;
+		}
+		else{
+			node = node -> next;
+		}
+	}
+
 	pthread_rwlock_unlock(lock);		
 
 	return NULL;
@@ -128,7 +183,7 @@ void* SafeFind(void* head, uint32_t value){
 
 int Display(void* head){
 	struct Node* node = (struct Node*)head;
-	node -> value = malloc(sizeof(uint32_t));
+	//node -> value = malloc(sizeof(uint32_t));
 	//node -> next = head;
 	node = node -> next;
 	printf("[ ");
