@@ -151,8 +151,22 @@ int SafeDelete(void* head, uint32_t loc){
 	struct Node* node = (struct Node*)head; 
 	
 	uint32_t count = 0;	
+
 	while(count < loc){
 		if(count == loc || node == NULL){
+			struct Node* lock_node = (struct Node*)head;
+			pthread_rwlock_t* lock = lock_node -> lock;
+			pthread_rwlock_wrlock(lock);
+
+			struct Node* previous;
+			struct Node* subsequent;
+
+			previous = node -> prev;
+			subsequent = node -> next;
+			previous -> next = subsequent;
+			subsequent -> prev = previous;
+			
+			free(node);
 			return 1;
 		}
 
@@ -175,12 +189,13 @@ int SafeDelete(void* head, uint32_t loc){
 	}
 
 
-	struct Node* previous;
-	struct Node* subsequent;
 
 	struct Node* lock_node = (struct Node*)head;
 	pthread_rwlock_t* lock = lock_node -> lock;
 	pthread_rwlock_wrlock(lock);
+
+	struct Node* previous;
+	struct Node* subsequent;
 
 	previous = node -> prev;
 	subsequent = node -> next;
@@ -261,11 +276,13 @@ int Destroy(void* head){
 		struct Node* previous = (struct Node*)head;
 		previous = node;
 		node = node -> prev;
+		pthread_rwlock_destroy(lock);
+		free(previous -> lock);
 		free(previous);
 	}
 	//free(node);
 	pthread_rwlock_unlock(lock);		
-	//free(lock_node);
+	free(lock_node);
 	return 1;
 }
 
