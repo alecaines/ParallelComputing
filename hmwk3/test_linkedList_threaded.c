@@ -15,6 +15,7 @@ void* DoSafeDeletes(void* head){
     srand(t);
     for (int i =0; i < OPS/2; i++){
         uint32_t loc = rand() % (OPS);
+	//printf("Do %d\n", i);
         SafeDelete(head, loc);
     }
     return NULL;
@@ -68,6 +69,7 @@ int TestSafeInserts(void* head){
 int TestSafeDeletes(void* head, int target_numb){
     pthread_t* handlers = malloc(sizeof(pthread_t)*THREADCOUNT);
     for (int i = 0; i< THREADCOUNT; i++){
+	//printf("Test %d\n", i);
         pthread_create(&handlers[i], NULL, DoSafeDeletes, (void*) head);
     }
   
