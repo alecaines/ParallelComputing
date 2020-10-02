@@ -117,14 +117,19 @@ int main(int argc, char** argv){
 
     printf("Safe tests!\n");
     //"Safe" tests
+    printf("Trying Creating\n");
     void* head = Create();
     printf("Finished Creating\n");
+    printf("Trying Inserting\n");
     TestSafeInserts(head);
     printf("Finished Safe Inserting\n");
+    printf("Trying SafeDeletes\n");
     TestSafeDeletes(head, THREADCOUNT * OPS/2);
     printf("Finisehd Safe Deletes\n");
+    printf("Trying SafeDeletes again\n");
     TestSafeDeletes(head, 0);
     printf("Finisehd Safe Deletes again\n");
+    printf("Trying Destroying\n");
     Destroy(head);
     printf("Finished Destroying\n");
 

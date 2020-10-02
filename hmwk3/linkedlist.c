@@ -51,7 +51,7 @@ int Insert(void* head, uint32_t value, uint32_t loc){
 		newNode -> next = node -> next;
 		node -> next = newNode;
 	}
-
+	//free(node);
 	return 1;
 }
 
@@ -63,6 +63,10 @@ int Delete(void* head, uint32_t loc){
 		node = node -> next;
 		count+=1;
 	}
+	
+	if(node == NULL){
+		return 1;
+	}
 
 	struct Node* previous;
 	struct Node* subsequent;
@@ -70,8 +74,8 @@ int Delete(void* head, uint32_t loc){
 	subsequent = node -> next;
 	previous -> next = subsequent;
 	subsequent -> prev = previous;
-	free(node);
-	return 1;
+	//free(node);
+	return 0;
 }
 
 void* Find(void* head, uint32_t value){
@@ -86,6 +90,7 @@ void* Find(void* head, uint32_t value){
 			node = node -> next;
 		}
 	}
+	//free(node);
 	return NULL;
 }
 
@@ -124,9 +129,9 @@ int SafeInsert(void* head, uint32_t value, uint32_t loc){
 		newNode -> next = node -> next;
 		node -> next = newNode;
 	}
-
+	//free(node);
 	pthread_rwlock_unlock(lock);		
-
+	//free(lock_node);	
 	return 1;
 }
 
@@ -143,6 +148,10 @@ int SafeDelete(void* head, uint32_t loc){
 		node = node -> next;
 		count+=1;
 	}
+	
+	if(node == NULL){
+		return 1;
+	}
 
 	struct Node* previous;
 	struct Node* subsequent;
@@ -150,12 +159,12 @@ int SafeDelete(void* head, uint32_t loc){
 	subsequent = node -> next;
 	previous -> next = subsequent;
 	subsequent -> prev = previous;
-	free(node);
-
-
+	
+	
+	//free(node);
 	pthread_rwlock_unlock(lock);		
-
-	return 1;
+	//free(lock_node);
+	return 0;
 }
 
 void* SafeFind(void* head, uint32_t value){
@@ -176,27 +185,43 @@ void* SafeFind(void* head, uint32_t value){
 		}
 	}
 
+	//free(node);
 	pthread_rwlock_unlock(lock);		
-
+	//free(lock_node);
 	return NULL;
 }
 
 int Display(void* head){
+	struct Node* lock_node = (struct Node*)head;
+	pthread_rwlock_t* lock = lock_node -> lock;
+	pthread_rwlock_init(lock, NULL);
+	pthread_rwlock_rdlock(lock);
+	
 	struct Node* node = (struct Node*)head;
 	//node -> value = malloc(sizeof(uint32_t));
 	//node -> next = head;
 	node = node -> next;
+	int count = 0;
 	printf("[ ");
 	while(node != NULL){
 		printf("%" PRIu32 " ", node -> value);
 		node = node -> next;
+		count+=1;
 	}
 	printf("]\n");
 
-	return 1;
+	//free(node);
+	pthread_rwlock_unlock(lock);		
+	//free(lock_node);
+	return count;
 }
 
 int Destroy(void* head){
+	struct Node* lock_node = (struct Node*)head;
+	pthread_rwlock_t* lock = lock_node -> lock;
+	pthread_rwlock_init(lock, NULL);
+	pthread_rwlock_rdlock(lock);
+	
 	struct Node* node = (struct Node*)head;
 	while(node != NULL){
 		node = node -> next;	
@@ -208,7 +233,9 @@ int Destroy(void* head){
 		node = node -> prev;
 		free(previous);
 	}
-
+	//free(node);
+	pthread_rwlock_unlock(lock);		
+	//free(lock_node);
 	return 1;
 }
 
