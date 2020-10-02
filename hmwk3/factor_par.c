@@ -29,16 +29,20 @@ void* find_factors(void* number){
     uint64_t end = block*(partition+1);
 
     for(uint64_t i = start; i< end; i+=2){
-	if(SUCCESS == 1){
-	       return NULL;
-	}
-	else{
-		if(TARGET%i==0){
-			factors[0] = i;
-			factors[1] = TARGET/i;
-			SUCCESS = 1;
+	//pthread_rwlock_t* lock = malloc(sizeof(pthread_rwlock_t));
+	//pthread_rwlock_init(lock, NULL);
+	//pthread_rwlock_wrlock(lock);
+		if(SUCCESS == 1){
+		       return NULL;
 		}
-	}
+		else{
+			if(TARGET%i==0){
+				factors[0] = i;
+				factors[1] = TARGET/i;
+				SUCCESS = 1;
+			}
+		}
+	//pthread_rwlock_unlock(lock);
 
     }
 

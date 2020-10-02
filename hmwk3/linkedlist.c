@@ -136,17 +136,20 @@ int SafeInsert(void* head, uint32_t value, uint32_t loc){
 }
 
 int SafeDelete(void* head, uint32_t loc){
-	struct Node* lock_node = (struct Node*)head;
-	pthread_rwlock_t* lock = lock_node -> lock;
-	pthread_rwlock_init(lock, NULL);
-	pthread_rwlock_wrlock(lock);
 
 	struct Node* node = (struct Node*)head; //why am I instantiating this like this
 	
 	uint32_t count = 0;	
 	while(count < loc){
+		struct Node* lock_node = (struct Node*)head;
+		pthread_rwlock_t* lock = lock_node -> lock;
+		pthread_rwlock_init(lock, NULL);
+		pthread_rwlock_wrlock(lock);
 		node = node -> next;
+		
 		count+=1;
+
+		pthread_rwlock_unlock(lock);		
 	}
 	
 	if(node == NULL){
@@ -155,6 +158,7 @@ int SafeDelete(void* head, uint32_t loc){
 
 	struct Node* previous;
 	struct Node* subsequent;
+
 	previous = node -> prev;
 	subsequent = node -> next;
 	previous -> next = subsequent;
@@ -162,7 +166,6 @@ int SafeDelete(void* head, uint32_t loc){
 	
 	
 	//free(node);
-	pthread_rwlock_unlock(lock);		
 	//free(lock_node);
 	return 0;
 }
