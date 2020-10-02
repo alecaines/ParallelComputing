@@ -16,8 +16,6 @@ void* Create(){
 	head -> prev = NULL;
 	head -> next = NULL;
 	head -> value = 0;
-	pthread_rwlock_t* rwlock = malloc(sizeof(pthread_rwlock_t));
-	head -> lock = rwlock;
 	return head;
 }
 
@@ -92,37 +90,32 @@ void* Find(void* head, uint32_t value){
 }
 
 int SafeInsert(void* head, uint32_t value, uint32_t loc){
-	struct Node* node = (struct Node*)head;
-	pthread_rwlock_t* lock = node -> lock;
-	pthread_rwlock_init(lock, NULL);
-	pthread_rwlock_wrlock(lock);
-		Insert(head, value, loc);
-	pthread_rwlock_unlock(lock);		
+	pthread_rdwr_init_np();
+	pthread_rdwr_wlock_np();
+	
+	Insert(head, value, loc);
 
+	pthread_rdwr_wunlock_np();
 	return 1;
 }
 
 int SafeDelete(void* head, uint32_t loc){
-	struct Node* node = (struct Node*)head;
-	pthread_rwlock_t* lock = node -> lock;
-	pthread_rwlock_init(lock, NULL);
-	pthread_rwlock_init(lock, NULL);
-	pthread_rwlock_wrlock(lock);
-		Delete(head, loc);
-	pthread_rwlock_unlock(lock);		
+	pthread_rdwr_init_np();
+	pthread_rdwr_wlock_np();
 
+	Delete(head, loc);
+
+	pthread_rdwr_wunlock_np();
 	return 1;
 }
 
 void* SafeFind(void* head, uint32_t value){
-	struct Node* node = (struct Node*)head;
-	pthread_rwlock_t* lock = node -> lock;
-	pthread_rwlock_init(lock, NULL);
-	pthread_rwlock_init(lock, NULL);
-	pthread_rwlock_rdlock(lock);
-		Find(head, value);
-	pthread_rwlock_unlock(lock);		
+	pthread_rdwr_init_np();
+	pthread_rdwr_rlock_np();
 
+	Find(head, value);
+
+	pthread_rdwr_runlock_np();
 	return NULL;
 }
 
@@ -149,11 +142,9 @@ int Destroy(void* head){
 
 	while(node != NULL){
 		struct Node* previous = (struct Node*)head;
-		previous = node;
-		node = node -> prev;
-		free(previous);
+		previous = node -> prev;
+		free(node);
 	}
 
 	return 1;
 }
-

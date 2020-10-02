@@ -2,6 +2,7 @@
 struct Node{
 	struct Node* prev;
 	struct Node* next;
+	pthread_rwlock_t* lock;
 	uint32_t value;
 };
 
@@ -11,7 +12,7 @@ void* Create();
 
 //These functions are not threadsafe
 int Insert(void* head, uint32_t value, uint32_t loc); //Inserts an item of the value at the index loc. If loc is out-of-bounds, it should insert at the end of the list.
-int Delete(void* head, uint32_t item); //Deletes the item at index loc. If loc is out-of-bounds, it should delete the last item in list.
+int Delete(void* head, uint32_t loc); //Deletes the item at index loc. If loc is out-of-bounds, it should delete the last item in list.
 void* Find(void* head, uint32_t value); //Finds whether a given item is in the list and returns a pointer to it!
 
 //These functions should be threadsafe 
