@@ -153,7 +153,6 @@ int SafeDelete(void* head, uint32_t loc){
 	uint32_t count = 0;	
 	while(count < loc){
 		if(count == loc || node == NULL){
-			printf("yo");
 			return 1;
 		}
 
