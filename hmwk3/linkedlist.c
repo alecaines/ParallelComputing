@@ -51,7 +51,6 @@ int Insert(void* head, uint32_t value, uint32_t loc){
 		newNode -> next = node -> next;
 		node -> next = newNode;
 	}
-	//free(node);
 	return 1;
 }
 
@@ -74,7 +73,7 @@ int Delete(void* head, uint32_t loc){
 	subsequent = node -> next;
 	previous -> next = subsequent;
 	subsequent -> prev = previous;
-	//free(node);
+	free(node);
 	return 0;
 }
 
@@ -124,6 +123,7 @@ int SafeInsert(void* head, uint32_t value, uint32_t loc){
 			count+=1;
 		//printf("%" PRIu32 "\n", (*node).value); 
 		}
+
 		struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
 		//newNode -> value = malloc(sizeof(uint32_t));
 		struct Node* lock_node = (struct Node*)head;
@@ -137,8 +137,9 @@ int SafeInsert(void* head, uint32_t value, uint32_t loc){
 		node -> next = newNode;
 
 		pthread_rwlock_unlock(lock);		
+		return 0;
 	}
-	//free(node);
+	free(node);
 	//free(lock_node);	
 	return 1;
 }
@@ -178,7 +179,8 @@ int SafeDelete(void* head, uint32_t loc){
 	previous -> next = subsequent;
 	subsequent -> prev = previous;
 	
-	
+	free(previous);
+	free(subsequent);	
 	pthread_rwlock_unlock(lock);		
 	//free(node);
 	//free(lock_node);
