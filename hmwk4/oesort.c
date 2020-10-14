@@ -17,21 +17,25 @@ int64_t* Populate(char* fname, uint64_t* size){
 
 int my_sort(int64_t* input, uint64_t size){
 	if(omp_get_thread_num()%2 == 0){
-		for(uint64_t i = 0; i < size - 2; i+=2){
-			if(input[i] > input[i+1]){
-				int64_t mid = input[i+1];
-				input[i+1] = input[i];
-				input[i] = mid;
+		for(uint64_t j = 0; j < size - 1; j+=2){
+			for(uint64_t i = 0; i < size - 1; i+=2){
+				if(input[i] > input[i+1]){
+					int64_t mid = input[i+1];
+					input[i+1] = input[i];
+					input[i] = mid;
+				}
 			}
 		}
 	}
 
 	if(omp_get_thread_num()%2 == 1){
-		for(uint64_t i = 1; i < size - 2; i+=2){
-			if(input[i] > input[i+1]){
-				int64_t mid = input[i+1];
-				input[i+1] = input[i];
-				input[i] = mid;
+		for(uint64_t j = 0; j < size - 1; j+=2){
+			for(uint64_t i = 1; i < size - 1; i+=2){
+				if(input[i] > input[i+1]){
+					int64_t mid = input[i+1];
+					input[i+1] = input[i];
+					input[i] = mid;
+				}
 			}
 		}
 	}

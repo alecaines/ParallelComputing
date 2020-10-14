@@ -10,16 +10,18 @@ Sets *size to be the number of numbers
 */
 int64_t* Populate(char* fname, uint64_t* size){
     //Just allocate a bunch of memory to use up some memory for now...
-	*size = 1234;
+	printf("yo %" PRIu64 "\n", *size);    
 	return (int64_t*) malloc(1234 * sizeof(size));
 }
 
 int my_sort(int64_t* input, uint64_t size){
-	for(uint64_t i = 0; i < size -1; i++){
-		if(input[i] > input[i+1]){
-			int64_t mid = input[i+1];
-			input[i+1] = input[i];
-			input[i] = mid;
+	for(uint64_t j = 0; j < size -1; j++){
+		for(uint64_t i = 0; i < size -1; i++){
+			if(input[i] > input[i+1]){
+				int64_t mid = input[i+1];
+				input[i+1] = input[i];
+				input[i] = mid;
+			}
 		}
 	}
 	return 0;
@@ -41,7 +43,12 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int main(int argc, char** argv){
-	uint64_t n; //The input size
+	uint64_t n = 1234; //The input size
+
+	if(argc==2){
+		n = (uint64_t)strtoull(argv[1], NULL, 10);
+	}
+
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
 	
 	struct timespec start, end;
