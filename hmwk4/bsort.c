@@ -11,7 +11,7 @@ Sets *size to be the number of numbers
 int64_t* Populate(char* fname, uint64_t* size){
     //Just allocate a bunch of memory to use up some memory for now...
 	printf("yo %" PRIu64 "\n", *size);    
-	return (int64_t*) malloc(1234 * sizeof(size));
+	return (int64_t*) malloc(sizeof(8) * sizeof(size));
 }
 
 int my_sort(int64_t* input, uint64_t size){
@@ -57,7 +57,7 @@ int main(int argc, char** argv){
 	clock_gettime(CLOCK_MONOTONIC, &start);
 	my_sort(input, n);
 	clock_gettime(CLOCK_MONOTONIC, &end);
-
+	
 	time_diff = (end.tv_sec - start.tv_sec);
 	time_diff += (end.tv_nsec - start.tv_nsec) / 1e9;
 
