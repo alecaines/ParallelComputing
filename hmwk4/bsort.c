@@ -19,9 +19,8 @@ int64_t* Populate(char* fname, uint64_t* size){
 
 	for(uint64_t i = 0; i < *size-2; i++){
 		fscanf(file, PRIu64, &array[i]);
-		printf("made it to %" PRIu64 " of $" PRId64 "\n", i, *size);
 	}
-	printf("good mornin!");
+	printf("good mornin!\n");
 	return array;
 }
 
