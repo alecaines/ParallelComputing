@@ -14,12 +14,18 @@ int64_t* Populate(char* fname, uint64_t* size){
 
 	FILE *file;
 	file = fopen(fname, "r");
+	int64_t* array = malloc(sizeof(int64_t) * *size);
+	/*
+	int64_t m;
+	fscanf(file, PRIu64, &m);
+	printf("m = %" PRId64 "\n", m);
+	*/
 
-	int64_t* array = malloc(sizeof(int64_t*) * sizeof(size));
-
-	for(uint64_t i = 0; i < *size-2; i++){
+	for(uint64_t i = 0; i < 2; i++){
 		fscanf(file, PRIu64, &array[i]);
+		//printf("array at i %" PRId64 "\n", array[i]);
 	}
+
 	printf("good mornin!\n");
 	return array;
 }
