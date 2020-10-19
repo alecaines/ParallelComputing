@@ -10,14 +10,32 @@ This function returns a pointer to an array with all the numbers in the file as 
 Sets *size to be the number of numbers
 */
 int64_t* Populate(char* fname, uint64_t* size){
-	//Just allocate a bunch of memory to use up some memory for now...
-	*size = 1234;
-	return (int64_t*) malloc(1234 * sizeof(size));
+	FILE *file;
+	file = fopen(fname, "r");
+	char *cap = NULL;
+	char *ptr;
+	size_t len = 0;
+	ssize_t read;
+	read = getline(&cap, &len, file);
+	unsigned long long int newcap = strtoull(cap, &ptr, 10);
+
+	int64_t* array = malloc(sizeof(int64_t) * newcap);
+	
+	for(uint64_t i = 0; i < newcap; i++){
+		if(i > 1){
+			read = getline(&cap, &len, file);
+			array[i] = strtoull(cap, &ptr, 10);
+		}
+	}
+
+	fclose(file);
+
+	return array;
 }
 
 int my_sort(int64_t* input, uint64_t size){
 	if(omp_get_thread_num()%2 == 0){
-		for(uint64_t j = 0; j < size - 1; j+=2){
+		while(is_sorted(input, size) != 1){
 			for(uint64_t i = 0; i < size - 1; i+=2){
 				if(input[i] > input[i+1]){
 					int64_t mid = input[i+1];
@@ -29,7 +47,7 @@ int my_sort(int64_t* input, uint64_t size){
 	}
 
 	if(omp_get_thread_num()%2 == 1){
-		for(uint64_t j = 0; j < size - 1; j+=2){
+		while(is_sorted(input, size) != 1){
 			for(uint64_t i = 1; i < size - 1; i+=2){
 				if(input[i] > input[i+1]){
 					int64_t mid = input[i+1];
@@ -57,7 +75,16 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int main(int argc, char** argv){
-	uint64_t n; //The input size
+	FILE *file;
+	file = fopen("./numbers.txt", "r");
+	char *cap = NULL;
+	char *ptr;
+	size_t len = 0;
+	ssize_t read;
+	read = getline(&cap, &len, file);
+	uint64_t n = strtoull(cap, &ptr, 10);
+	fclose(file);
+
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
 	
 	struct timespec start, end;
