@@ -15,15 +15,15 @@ int64_t* Populate(char* fname, uint64_t* size){
 	char *cap = NULL;
 	char *ptr;
 	size_t len = 0;
-	ssize_t read;
-	read = getline(&cap, &len, file);
+
+	getline(&cap, &len, file);
 	unsigned long long int newcap = strtoull(cap, &ptr, 10);
 
 	int64_t* array = malloc(sizeof(int64_t) * newcap);
 	
 	for(uint64_t i = 0; i < newcap; i++){
 		if(i > 1){
-			read = getline(&cap, &len, file);
+			getline(&cap, &len, file);
 			array[i] = strtoull(cap, &ptr, 10);
 		}
 	}
@@ -31,6 +31,19 @@ int64_t* Populate(char* fname, uint64_t* size){
 	fclose(file);
 
 	return array;
+}
+
+/*
+Suggested function to write, to check whether the array is sorted
+Returns 0 if not sorted, returns 1 if sorted
+*/
+int is_sorted(int64_t* input, uint64_t size){
+	for(uint64_t i =0; i < size-1; i++){
+		if(input[i] > input[i+1]){
+			return 0;
+		}
+	}
+    return 1;
 }
 
 int my_sort(int64_t* input, uint64_t size){
@@ -61,18 +74,6 @@ int my_sort(int64_t* input, uint64_t size){
 	return 0;
 }
 
-/*
-Suggested function to write, to check whether the array is sorted
-Returns 0 if not sorted, returns 1 if sorted
-*/
-int is_sorted(int64_t* input, uint64_t size){
-	for(uint64_t i =0; i < size-1; i++){
-		if(input[i] > input[i+1]){
-			return 0;
-		}
-	}
-    return 1;
-}
 
 int main(int argc, char** argv){
 	FILE *file;
@@ -80,8 +81,8 @@ int main(int argc, char** argv){
 	char *cap = NULL;
 	char *ptr;
 	size_t len = 0;
-	ssize_t read;
-	read = getline(&cap, &len, file);
+
+	getline(&cap, &len, file);
 	uint64_t n = strtoull(cap, &ptr, 10);
 	fclose(file);
 

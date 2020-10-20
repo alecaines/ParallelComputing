@@ -16,16 +16,15 @@ int64_t* Populate(char* fname, uint64_t* size){
 	char *cap = NULL;
 	char *ptr;
 	size_t len = 0;
-	ssize_t read;
 
-	read = getline(&cap, &len, file);
+	getline(&cap, &len, file);
 	unsigned long long int newcap = strtoull(cap, &ptr, 10);
 
 	int64_t* array = malloc(sizeof(int64_t) * newcap);
 
 	for(uint64_t i = 0; i < newcap; i++){
 		if(i > 1){
-			read = getline(&cap, &len, file);
+			getline(&cap, &len, file);
 			array[i] = strtoull(cap, &ptr, 10);
 		}
 	}
@@ -33,21 +32,6 @@ int64_t* Populate(char* fname, uint64_t* size){
 	fclose(file);
 
 	return array;
-}
-
-int my_sort(int64_t* input, uint64_t size){
-	printf("sorting\n");
-	//for(uint64_t j = 0; j < size -1; j++){ //maybe switch with while not is_sorted and compute is_sorted at end of loop block
-	while(is_sorted(input, size)!= 1){
-		for(uint64_t i = 0; i < size -1; i++){
-			if(input[i] > input[i+1]){
-				int64_t mid = input[i+1];
-				input[i+1] = input[i];
-				input[i] = mid;
-			}
-		}
-	}
-	return 0;
 }
 
 /*
@@ -65,23 +49,33 @@ int is_sorted(int64_t* input, uint64_t size){
 	return 1;
 }
 
+int my_sort(int64_t* input, uint64_t size){
+	printf("sorting\n");
+	
+	//while(is_sorted(input, size)!= 1){
+	for(uint64_t j = 0; j < size-1; j++){	
+		for(uint64_t i = 0; i < size-j-1; i++){
+			if(input[i] > input[i+1]){
+				int64_t mid = input[i+1];
+				input[i+1] = input[i];
+				input[i] = mid;
+			}
+		}
+	}
+	return 0;
+}
+
+
 int main(int argc, char** argv){
 		FILE *file;
 		file = fopen("./numbers.txt", "r");
 		char *cap = NULL;
 		char *ptr;
 		size_t len = 0;
-		ssize_t read;
-		read = getline(&cap, &len, file);
+
+		getline(&cap, &len, file);
 		uint64_t n = strtoull(cap, &ptr, 10);
 		fclose(file);
-		//uint64_t n; //The input size
-
-		/*
-		if(argc==2){
-			n = (uint64_t)strtoull(argv[1], NULL, 10);
-		}
-		*/
 
 		int64_t* input = Populate("./numbers.txt", &n); //gets the array
 		struct timespec start, end;
@@ -96,7 +90,7 @@ int main(int argc, char** argv){
 
 		//check if it's sorted.
 		int sorted = is_sorted(input, n);
-		//printf("Are the numbers sorted? %s \n", sorted ? "true" : "false");
+		printf("Are the numbers sorted? %s \n", sorted ? "true" : "false");
 		
 		printf("Time elapsed: %lf \n", time_diff);
 		free(input);
