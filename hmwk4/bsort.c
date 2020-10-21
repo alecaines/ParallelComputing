@@ -9,7 +9,6 @@ This function returns a pointer to an array with all the numbers in the file as 
 Sets *size to be the number of numbers
 */
 int64_t* Populate(char* fname, uint64_t* size){
-	//Just allocate a bunch of memory to use up some memory for now...
 
 	FILE *file;
 	file = fopen(fname, "r");

@@ -47,9 +47,9 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int my_sort(int64_t* input, uint64_t size){
-	if(omp_get_thread_num()%2 == 0){
+		uint64_t start = (uint64_t)omp_get_thread_num()%2;
 		while(is_sorted(input, size) != 1){
-			for(uint64_t i = 0; i < size - 1; i+=2){
+			for(uint64_t i = start; i < size - 1; i+=2){
 				if(input[i] > input[i+1]){
 					int64_t mid = input[i+1];
 					input[i+1] = input[i];
@@ -57,20 +57,7 @@ int my_sort(int64_t* input, uint64_t size){
 				}
 			}
 		}
-	}
 
-	if(omp_get_thread_num()%2 == 1){
-		while(is_sorted(input, size) != 1){
-			for(uint64_t i = 1; i < size - 1; i+=2){
-				if(input[i] > input[i+1]){
-					int64_t mid = input[i+1];
-					input[i+1] = input[i];
-					input[i] = mid;
-				}
-			}
-		}
-	}
-	
 	return 0;
 }
 
@@ -92,7 +79,7 @@ int main(int argc, char** argv){
 	double time_diff;
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
-
+	
 	#pragma omp parallel
 		my_sort(input, n);
 
