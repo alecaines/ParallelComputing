@@ -12,19 +12,18 @@ int64_t* Populate(char* fname, uint64_t* size){
 
 	FILE *file;
 	file = fopen(fname, "r");
-	char *cap = NULL;
+	char *line_content = NULL;
 	char *ptr;
 	size_t len = 0;
 
-	getline(&cap, &len, file);
-	unsigned long long int newcap = strtoull(cap, &ptr, 10);
+	getline(&line_content, &len, file);
+	unsigned long long int newline_content = strtoull(line_content, &ptr, 10);
 
-	int64_t* array = malloc(sizeof(int64_t) * newcap);
-
-	for(uint64_t i = 0; i < newcap; i++){
+	int64_t* array = malloc(sizeof(int64_t) * newline_content);
+	for(uint64_t i = 0; i < *size; i++){
 		if(i > 1){
-			getline(&cap, &len, file);
-			array[i] = strtoull(cap, &ptr, 10);
+			getline(&line_content, &len, file);
+			array[i] = strtoull(line_content, &ptr, 10);
 		}
 	}
 	
@@ -53,7 +52,8 @@ int my_sort(int64_t* input, uint64_t size){
 	
 	//while(is_sorted(input, size)!= 1){
 	for(uint64_t j = 0; j < size-1; j++){	
-		for(uint64_t i = 0; i < size-j-1; i++){
+		//for(uint64_t i = 0; i < size-j-1; i++){
+		for(uint64_t i = 0; i < size-i-1; i++){
 			if(input[i] > input[i+1]){
 				int64_t mid = input[i+1];
 				input[i+1] = input[i];
@@ -68,12 +68,12 @@ int my_sort(int64_t* input, uint64_t size){
 int main(int argc, char** argv){
 		FILE *file;
 		file = fopen("./numbers.txt", "r");
-		char *cap = NULL;
+		char *line_content = NULL;
 		char *ptr;
 		size_t len = 0;
 
-		getline(&cap, &len, file);
-		uint64_t n = strtoull(cap, &ptr, 10);
+		getline(&line_content, &len, file);
+		uint64_t n = strtoull(line_content, &ptr, 10);
 		fclose(file);
 
 		int64_t* input = Populate("./numbers.txt", &n); //gets the array

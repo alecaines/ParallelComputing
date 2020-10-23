@@ -21,7 +21,7 @@ int64_t* Populate(char* fname, uint64_t* size){
 
 	int64_t* array = malloc(sizeof(int64_t) * newcap);
 	
-	for(uint64_t i = 0; i < newcap; i++){
+	for(uint64_t i = 0; i < *size; i++){
 		if(i > 1){
 			getline(&cap, &len, file);
 			array[i] = strtoull(cap, &ptr, 10);
@@ -47,9 +47,12 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int my_sort(int64_t* input, uint64_t size){
+	#pragma omp parallel
+	{
 		uint64_t start = (uint64_t)omp_get_thread_num()%2;
-		while(is_sorted(input, size) != 1){
-			for(uint64_t i = start; i < size - 1; i+=2){
+		//while(is_sorted(input, size) != 1){
+		for(uint64_t j = 0; j < size - 1; j++){
+			for(uint64_t i = start; i < size - j - 1; i+=2){
 				if(input[i] > input[i+1]){
 					int64_t mid = input[i+1];
 					input[i+1] = input[i];
@@ -57,7 +60,7 @@ int my_sort(int64_t* input, uint64_t size){
 				}
 			}
 		}
-
+	}
 	return 0;
 }
 
@@ -80,8 +83,7 @@ int main(int argc, char** argv){
 
 	clock_gettime(CLOCK_MONOTONIC, &start);
 	
-	#pragma omp parallel
-		my_sort(input, n);
+	my_sort(input, n);
 
 	clock_gettime(CLOCK_MONOTONIC, &end);
 	time_diff = (end.tv_sec - start.tv_sec);
