@@ -48,12 +48,10 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int my_sort(int64_t* input, uint64_t size){
-	printf("sorting\n");
-	
 	//while(is_sorted(input, size)!= 1){
 	for(uint64_t j = 0; j < size-1; j++){	
 		//for(uint64_t i = 0; i < size-j-1; i++){
-		for(uint64_t i = 0; i < size-i-1; i++){
+		for(uint64_t i = 0; i < size-1; i++){
 			if(input[i] > input[i+1]){
 				int64_t mid = input[i+1];
 				input[i+1] = input[i];
@@ -61,6 +59,7 @@ int my_sort(int64_t* input, uint64_t size){
 			}
 		}
 	}
+
 	return 0;
 }
 
@@ -77,20 +76,20 @@ int main(int argc, char** argv){
 		fclose(file);
 
 		int64_t* input = Populate("./numbers.txt", &n); //gets the array
-		struct timespec start, end;
-		double time_diff;
+		//struct timespec start, end;
+		//double time_diff;
 		
 
-		clock_gettime(CLOCK_MONOTONIC, &start);
+		//clock_gettime(CLOCK_MONOTONIC, &start);
 		my_sort(input, n);
-		clock_gettime(CLOCK_MONOTONIC, &end);
-		time_diff = (end.tv_sec - start.tv_sec);
-		time_diff += (end.tv_nsec - start.tv_nsec) / 1e9;
+		//clock_gettime(CLOCK_MONOTONIC, &end);
+		//time_diff = (end.tv_sec - start.tv_sec);
+		//time_diff += (end.tv_nsec - start.tv_nsec) / 1e9;
 
 		//check if it's sorted.
 		int sorted = is_sorted(input, n);
 		printf("Are the numbers sorted? %s \n", sorted ? "true" : "false");
 		
-		printf("Time elapsed: %lf \n", time_diff);
+		//printf("Time elapsed: %lf \n", time_diff);
 		free(input);
 }
