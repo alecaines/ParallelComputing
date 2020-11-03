@@ -30,52 +30,28 @@ int64_t* Populate(char* fname, uint64_t* size){
 }
 
 int64_t* my_sort(int64_t* input, uint64_t size){
-	int pivot = rand() % (size + 1);
-	if(size == 1){
+	
+	if(is_sorted(input, size)){
 		return input;
 	}
-	else if(size == 2){
-		if(input[0] > input[1]){
-			int64_t* array = malloc(sizeof(int64_t) * size);
-			array[0] = input[1];
-			array[1] = input[0];
-			return array;
-		}	
-		else{
-			return input;
-		}
-	}
 	else{
-		int64_t* part1 = malloc(sizeof(int64_t) * size);
-		int64_t* part2 = malloc(sizeof(int64_t) * size);
-		for(int i = 0; i < pivot; i++){
-			part1[i] = input[i];
-		}
-		for(int i = pivot; i < size; i++){
-			part2[i] = input[i];
-		}
-		int64_t* ordered_part1 = malloc(sizeof(int64_t) * pivot);
-		int64_t* ordered_part2 = malloc(sizeof(int64_t) * (size - pivot));
-		ordered_part1 = my_sort(part1, pivot);
-		ordered_part2 = my_sort(part2, size - pivot);
-	
-		int64_t* ordered = malloc(sizeof(int64_t) * size);
-		printf("---------------------------------------\n");
+		int pi = rand() % (size + 1);
+		int64_t pivot = input[pi];
+		
+
+		int64_t* b = malloc(sizeof(int64_t) * size);
+
 		for(int i = 0; i < size; i++){
-			if(i < pivot){
-				printf("op1 %" PRId64 "\n", ordered_part1[i]);
-				ordered[i] = ordered_part1[i];
-			}
+			if(input[i] < pivot){
+				b[i] = input[i];
+			}	
 			else{
-				printf("op2 %" PRId64 "\n", ordered_part2[i]);
-				ordered[i] = ordered_part2[i];
+				b[i+pi] = input[i];
 			}
 		}
-		printf("---------------------------------------\n");
-		return ordered;
+		return input;
 	}
 }
-
 /*
 Suggested function to write, to check whether the array is sorted
 Returns 0 if not sorted, returns 1 if sorted
