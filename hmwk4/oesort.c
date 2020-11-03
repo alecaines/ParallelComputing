@@ -10,7 +10,7 @@ This function returns a pointer to an array with all the numbers in the file as 
 Sets *size to be the number of numbers
 */
 int64_t* Populate(char* fname, uint64_t* size){
-	FILE *file;
+	ILE *file;
 	file = fopen(fname, "r");
 	char *cap = NULL;
 	char *ptr;
