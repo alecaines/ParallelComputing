@@ -51,7 +51,6 @@ int64_t* my_sort(int64_t* input, uint64_t size){
 	else{
 		int pi = rand() % (size + 1);
 		int64_t pivot = input[pi];
-		
 
 		int64_t* b = malloc(sizeof(int64_t) * size);
 
@@ -86,6 +85,6 @@ int main(int argc, char** argv){
 	int sorted = is_sorted(input, n);
 	printf("Are the numbers sorted? %s \n", sorted ? "true" : "false");
 
-	//printf("Time elapsed: %lf \n", 0.0);
+	printf("Time elapsed: %lf \n", 0.0);
 	free(input);
 }
