@@ -29,6 +29,20 @@ int64_t* Populate(char* fname, uint64_t* size){
 	return array;
 }
 
+/*
+Suggested function to write, to check whether the array is sorted
+Returns 0 if not sorted, returns 1 if sorted
+*/
+int is_sorted(int64_t* input, uint64_t size){
+	for(uint64_t i = 0; i < size-1; i++){
+		printf("%" PRId64 "\n", input[i]);
+		if(input[i] > input[i+1]){
+			return 0;
+		}
+	}
+	return 1;
+}
+
 int64_t* my_sort(int64_t* input, uint64_t size){
 	
 	if(is_sorted(input, size)){
@@ -49,24 +63,8 @@ int64_t* my_sort(int64_t* input, uint64_t size){
 				b[i+pi] = input[i];
 			}
 		}
-		return input;
+		return my_sort(input, size);
 	}
-}
-/*
-Suggested function to write, to check whether the array is sorted
-Returns 0 if not sorted, returns 1 if sorted
-*/
-int is_sorted(int64_t* input, uint64_t size){
-	for(int i = 0; i < size; i++){
-		printf("%" PRId64 "\n", input[i]);
-	}
-	for(uint64_t i = 0; i < size-1; i++){
-		printf("%" PRId64 "\n", input[i]);
-		if(input[i] > input[i+1]){
-			return 0;
-		}
-	}
-	return 1;
 }
 
 int main(int argc, char** argv){
@@ -88,6 +86,6 @@ int main(int argc, char** argv){
 	int sorted = is_sorted(input, n);
 	printf("Are the numbers sorted? %s \n", sorted ? "true" : "false");
 
-	printf("Time elapsed: %lf \n", 0.0);
+	//printf("Time elapsed: %lf \n", 0.0);
 	free(input);
 }
