@@ -55,7 +55,6 @@ int my_sort(int64_t* input, uint64_t start, uint64_t end){
 		printf("pivot index %d\n", pi);
 		printf("%" PRId64 "\n", pivotPoint);
 		my_sort(input, start, pivotPoint - 1);
-		printf("finished first sort\n");
 		my_sort(input, pivotPoint + 1, end);
 		printf("finished second sort\n");
 	}
