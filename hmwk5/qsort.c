@@ -20,8 +20,8 @@ int64_t* Populate(char* fname, uint64_t* size){
 	int64_t* array = malloc(sizeof(int64_t) * *size);
 	
 	for(uint64_t i = 0; i < *size; i++){
-			getline(&cap, &len, file);
-			array[i] = strtoull(cap, &ptr, 10);
+		getline(&cap, &len, file);
+		array[i] = strtoull(cap, &ptr, 10);
 	}
 
 
@@ -34,8 +34,12 @@ Suggested function to write, to check whether the array is sorted
 Returns 0 if not sorted, returns 1 if sorted
 */
 int is_sorted(int64_t* input, uint64_t size){
+
 	for(uint64_t i = 0; i < size-1; i++){
 		printf("%" PRId64 "\n", input[i]);
+	}
+
+	for(uint64_t i = 0; i < size-1; i++){
 		if(input[i] > input[i+1]){
 			return 0;
 		}
@@ -43,20 +47,37 @@ int is_sorted(int64_t* input, uint64_t size){
 	return 1;
 }
 
+int partition(int64_t* input, int start, int end){
+	printf("%d %d\b", start, end);
+	int pi = rand() % end;
+	printf("%d\n", pi);
+	int64_t pivotPoint = input[pi];
+	
+	for(int i = start; i <= end; i++){
+		if(input[i] < pivotPoint){
+			start+=1;
+			int64_t temp = input[start];
+			input[start] = input[i];
+			input[i] = temp; 
+		}
+	}
+
+	int64_t temp = input[start];
+	input[start] = input[end];
+	input[end] = temp; 
+
+	return start;	
+
+}
+
 int my_sort(int64_t* input, uint64_t start, uint64_t end){
 	if (start >= end){
 		return 0;
 	}	
 	else{
-		//int pivotPoint = partition(input, start, end);
-		int pi = rand() % (end - start);
-		int64_t pivotPoint = input[pi];
-		printf("start %" PRIu64 " end %" PRIu64"\n", start, end);
-		printf("pivot index %d\n", pi);
-		printf("%" PRId64 "\n", pivotPoint);
+		int pivotPoint = partition(input, start, end);
 		my_sort(input, start, pivotPoint - 1);
 		my_sort(input, pivotPoint + 1, end);
-		printf("finished second sort\n");
 	}
 
 	return 0;
@@ -76,7 +97,7 @@ int main(int argc, char** argv){
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
 
 	my_sort(input, 0, n);
-	printf("finished sorting");
+	printf("finished sorting\n");
 
 	//check if it's sorted.
 	int sorted = is_sorted(input, n);
