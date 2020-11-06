@@ -43,27 +43,24 @@ int is_sorted(int64_t* input, uint64_t size){
 	return 1;
 }
 
-int64_t* my_sort(int64_t* input, uint64_t size){
-	
-	if(is_sorted(input, size)){
-		return input;
-	}
+int my_sort(int64_t* input, uint64_t start, uint64_t end){
+	if (start >= end){
+		return 0;
+	}	
 	else{
-		int pi = rand() % (size + 1);
-		int64_t pivot = input[pi];
-
-		int64_t* b = malloc(sizeof(int64_t) * size);
-
-		for(int i = 0; i < size; i++){
-			if(input[i] < pivot){
-				b[i] = input[i];
-			}	
-			else{
-				b[i+pi] = input[i];
-			}
-		}
-		return my_sort(input, size);
+		//int pivotPoint = partition(input, start, end);
+		int pi = rand() % (end - start);
+		int64_t pivotPoint = input[pi];
+		printf("start %" PRIu64 " end %" PRIu64"\n", start, end);
+		printf("pivot index %d\n", pi);
+		printf("%" PRId64 "\n", pivotPoint);
+		my_sort(input, start, pivotPoint - 1);
+		printf("finished first sort\n");
+		my_sort(input, pivotPoint + 1, end);
+		printf("finished second sort\n");
 	}
+
+	return 0;
 }
 
 int main(int argc, char** argv){
@@ -79,7 +76,8 @@ int main(int argc, char** argv){
 
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
 
-	my_sort(input, n);
+	my_sort(input, 0, n);
+	printf("finished sorting");
 
 	//check if it's sorted.
 	int sorted = is_sorted(input, n);
