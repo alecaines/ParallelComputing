@@ -47,38 +47,63 @@ int is_sorted(int64_t* input, uint64_t size){
 	return 1;
 }
 
-int partition(int64_t* input, int start, int end){
-	int pi = (rand() % (end - start)) + start; 
-	int64_t pivotPoint = input[pi];
+int merge(int64_t* input, int start, int midPoint, int end){
+	int p1 = midPoint - start + 1;
+	int p2 = end - midPoint;
 
-	printf("%d %d %d\n", start, pi, end);
+	int64_t* partition_1 = malloc(sizeof(int64_t) * p1);	
+	int64_t* partition_2 = malloc(sizeof(int64_t) * p2);	
 
-	for(int i = start; i <= end; i++){
-		if(input[i] > pivotPoint){
-			start+=1;
-			int64_t temp = input[start];
-			input[start] = input[i];
-			input[i] = temp; 
-		}
+	for(int i = 0; i < p1; i++){
+		partition_1[i] = input[start+i];
 	}
 
-	int64_t temp = input[start];
-	input[start] = input[end];
-	input[end] = temp; 
+	for(int j = 0; j < p1; j++){
+		partition_1[j] = input[midPoint + end + j];
+	}
 
-	return start;	
+	int a = 0;
+	int b = 0;
+	int c = 0;
 
+	while(a < p1 && b < p2){
+		if(partition_1[a] <= partition_2[b]){
+			input[c] = partition_1[a];
+			a+=1;
+		}
+		else{
+			input[c] = partition_2[b];
+			b+=1;
+		}
+		c+=1;
+	}
+
+	while(a < p1){
+		input[c] = partition_1[a];
+		a+=1;
+		c+=1;
+	}
+
+	while(b < p2){
+		input[c] = partition_2[b];
+		b+=1;
+		c+=1;
+	}
+
+	free(partition_1);
+	free(partition_2);
+	
+	return 0;
 }
 
 int my_sort(int64_t* input, uint64_t start, uint64_t end){
-	if (start >= end){
-		return 0;
-	}	
-	else{
-		int pivotPoint = partition(input, start, end);
-		my_sort(input, start, pivotPoint - 1);
-		my_sort(input, pivotPoint + 1, end);
+	if(start < end){
+		int midPoint = (start+end)/2;
+		my_sort(input, start, midPoint);
+		my_sort(input, midPoint+1, end);
+		merge(input, start, midPoint, end);
 	}
+
 
 	return 0;
 }
