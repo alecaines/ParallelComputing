@@ -48,11 +48,11 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int partition(int64_t* input, int start, int end){
-	printf("%d %d\b", start, end);
-	int pi = rand() % end;
-	printf("%d\n", pi);
+	int pi = (rand() % (end - start)) + start; 
 	int64_t pivotPoint = input[pi];
-	
+
+	printf("%d %d %d\n", start, pi, end);
+
 	for(int i = start; i <= end; i++){
 		if(input[i] < pivotPoint){
 			start+=1;
