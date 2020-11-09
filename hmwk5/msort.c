@@ -48,70 +48,66 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int merge(int64_t* input, int start, int midPoint, int end){
-	for(int i = 0; i < end; i++){
-		printf("%" PRId64 " ",input[i]);
+	
+	printf("partition %d %d %d\n", start, midPoint, end);
+
+	int64_t* partition_1 = malloc(sizeof(int64_t) * (midPoint - start +1));	
+	int64_t* partition_2 = malloc(sizeof(int64_t) * (end - midPoint));	
+
+	printf("part1\n");
+	for(int i = start; i < midPoint - start + 1; i++){
+		partition_1[i] = input[i];
+		printf("%" PRId64, partition_1[i]);
 	}
+	
 	printf("\n");
 
-	int p1 = midPoint - start + 1;
-	int p2 = end - midPoint;
+	printf("part2\n");
+	for(int i = midPoint; i < end - midPoint; i++){
+		partition_2[i] = input[i];
+		printf(" %" PRId64, partition_2[i]);
+	}
 
-	int64_t* partition_1 = malloc(sizeof(int64_t) * p1);	
-	int64_t* partition_2 = malloc(sizeof(int64_t) * p2);	
+	printf("\n");
 
-	for(int i = 0; i < p1; i++){ partition_1[i] = input[start+i]; printf("||| %" PRId64 "\n", partition_1[i]);}
+	int p1_count = 0;
+	int p2_count = 0;
+	int input_count = start;
 
-	for(int j = 0; j < p1; j++){ printf("||| %" PRId64 "\n", input[midPoint + end + j]); partition_1[j] = input[midPoint + end + j]; }
-
-	int a = 0;
-	int b = 0;
-	int c = start;
-
-	while(a < p1 && b < p2){
-		if(partition_1[a] <= partition_2[b]){
-			input[c] = partition_1[a];
-			a+=1;
+	while(p1_count < (midPoint - start + 1) && p2_count < (end - midPoint)){
+		if(partition_1[p1_count] < partition_2[p2_count]){
+			input[input_count] = partition_1[p1_count];
+			input_count++;
+			p1_count++;
 		}
 		else{
-			input[c] = partition_2[b];
-			b+=1;
+			input[input_count] = partition_2[p2_count];
+			input_count++;
+			p2_count++;
 		}
-		c+=1;
 	}
 
-	while(a < p1){
-		input[c] = partition_1[a];
-		a+=1;
-		c+=1;
+	while(p1_count < (midPoint - start + 1)){
+		input[input_count] = partition_1[p1_count];
+		input_count++;
+		p1_count++;
 	}
 
-	while(b < p2){
-		input[c] = partition_2[b];
-		b+=1;
-		c+=1;
+	while(p2_count < (end - midPoint)){
+		input[input_count] = partition_2[p2_count];
+		input_count++;
+		p2_count++;
 	}
 
-	free(partition_1);
-	free(partition_2);
 	return 0;
 }
 
 int my_sort(int64_t* input, uint64_t start, uint64_t end){
-	for(int i = 0; i < end; i++){
-		printf("| %" PRId64 "\n", input[i]);
-	}
-	printf("-------------------------------------\n");
 	if(start < end){
 		int midPoint = start + (end - start)/2;
-		printf("=======start first sort===============\n");
 		my_sort(input, start, midPoint);
-		printf("=======end first sort===============\n");
-		printf("=======start second sort===============\n");
 		my_sort(input, midPoint+1, end);
-		printf("=======end second sort===============\n");
-		printf("=======start merging===============\n");
 		merge(input, start, midPoint, end);
-		printf("=======end merging===============\n");
 	}
 
 	return 0;
