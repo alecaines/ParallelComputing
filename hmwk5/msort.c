@@ -35,9 +35,9 @@ Returns 0 if not sorted, returns 1 if sorted
 */
 int is_sorted(int64_t* input, uint64_t size){
 
-	/*for(uint64_t i = 0; i < size-1; i++){
+	for(uint64_t i = 0; i < size-1; i++){
 		printf("%" PRId64 "\n", input[i]);
-	}*/
+	}
 
 	for(uint64_t i = 0; i < size-1; i++){
 		if(input[i] > input[i+1]){
@@ -50,62 +50,53 @@ int is_sorted(int64_t* input, uint64_t size){
 int merge(int64_t* input, int start, int midPoint, int end){
 	
 	printf("partition %d %d %d\n", start, midPoint, end);
+
+	int64_t* partition_1 = malloc(sizeof(int64_t) * (midPoint - start +1));	
+	int64_t* partition_2 = malloc(sizeof(int64_t) * (end - midPoint));	
+
+	printf("part1\n");
+	for(int i = start; i < midPoint - start + 1; i++){
+		partition_1[i] = input[i];
+		printf("%" PRId64, partition_1[i]);
+	}
 	
-	if(end - start == 1){
-		return 0;
+	printf("\n");
+
+	printf("part2\n");
+	for(int i = midPoint; i < end - midPoint; i++){
+		partition_2[i] = input[i];
+		printf(" %" PRId64, partition_2[i]);
 	}
-	else if(end - start == 2){
-		if(input[start] > input[end]){
-			int64_t temp = input[start];
-			input[start] = input[end];
-			input[end] = temp;
-		}
-	}
-	else{
-		int64_t* partition_1 = malloc(sizeof(int64_t) * (midPoint - start +1));	
-		int64_t* partition_2 = malloc(sizeof(int64_t) * (end - midPoint));	
 
-		for(int i = start; i < midPoint - start + 1; i++){
-			partition_1[i] = input[i];
-		}
-		
-		for(int i = midPoint; i < end; i++){
-			partition_2[i] = input[i];
-		}
+	printf("\n");
 
-		printf("\n");
+	int p1_count = 0;
+	int p2_count = 0;
+	int input_count = start;
 
-		int p1_count = 0;
-		int p2_count = 0;
-		int input_count = start;
-
-		while(p1_count < (midPoint - start + 1) && p2_count < (end - midPoint)){
-			if(partition_1[p1_count] < partition_2[p2_count]){
-				input[input_count] = partition_1[p1_count];
-				input_count++;
-				p1_count++;
-			}
-			else{
-				input[input_count] = partition_2[p2_count];
-				input_count++;
-				p2_count++;
-			}
-		}
-
-		while(p1_count < (midPoint - start + 1)){
+	while(p1_count < (midPoint - start + 1) && p2_count < (end - midPoint)){
+		if(partition_1[p1_count] < partition_2[p2_count]){
 			input[input_count] = partition_1[p1_count];
 			input_count++;
 			p1_count++;
 		}
-
-		while(p2_count < (end - midPoint)){
+		else{
 			input[input_count] = partition_2[p2_count];
 			input_count++;
 			p2_count++;
 		}
+	}
 
-		free(partition_1);
-		free(partition_2);
+	while(p1_count < (midPoint - start + 1)){
+		input[input_count] = partition_1[p1_count];
+		input_count++;
+		p1_count++;
+	}
+
+	while(p2_count < (end - midPoint)){
+		input[input_count] = partition_2[p2_count];
+		input_count++;
+		p2_count++;
 	}
 
 	return 0;
