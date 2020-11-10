@@ -29,15 +29,21 @@ int64_t* Populate(char* fname, uint64_t* size){
 	return array;
 }
 
+int printArray(int64_t* input, uint64_t size){
+	printf("\n----------------------------------\n");
+	for(int i = 0; i < size; i++){
+		printf("% " PRId64 , input[i]);
+	}
+	printf("\n----------------------------------\n");
+	return 0;
+}
+
+
 /*
 Suggested function to write, to check whether the array is sorted
 Returns 0 if not sorted, returns 1 if sorted
 */
 int is_sorted(int64_t* input, uint64_t size){
-
-	for(uint64_t i = 0; i < size-1; i++){
-		printf("%" PRId64 "\n", input[i]);
-	}
 
 	for(uint64_t i = 0; i < size-1; i++){
 		if(input[i] > input[i+1]){
@@ -49,56 +55,56 @@ int is_sorted(int64_t* input, uint64_t size){
 
 int merge(int64_t* input, int start, int midPoint, int end){
 	
-	printf("partition %d %d %d\n", start, midPoint, end);
-
-	int64_t* partition_1 = malloc(sizeof(int64_t) * (midPoint - start +1));	
-	int64_t* partition_2 = malloc(sizeof(int64_t) * (end - midPoint));	
-
-	printf("part1\n");
-	for(int i = start; i < midPoint - start + 1; i++){
-		partition_1[i] = input[i];
-		printf("%" PRId64, partition_1[i]);
+	if((end - start) == 1){
+		return 0;
 	}
-	
-	printf("\n");
-
-	printf("part2\n");
-	for(int i = midPoint; i < end - midPoint; i++){
-		partition_2[i] = input[i];
-		printf(" %" PRId64, partition_2[i]);
+	else if((end - start) == 2){
+		if(input[start] > input[end]){
+			int64_t temp = input[start];
+			input[start] = input[end];
+			end = temp;
+		}
 	}
+	else{
+		//printf("partition %d %d %d\n", start, midPoint, end);
 
-	printf("\n");
+		int64_t* partitions = malloc(sizeof(int64_t) * (end - start + 1));	
 
-	int p1_count = 0;
-	int p2_count = 0;
-	int input_count = start;
+		//printArray(input, end - start + 1);
 
-	while(p1_count < (midPoint - start + 1) && p2_count < (end - midPoint)){
-		if(partition_1[p1_count] < partition_2[p2_count]){
-			input[input_count] = partition_1[p1_count];
+		int p1_count = start;
+		int p2_count = midPoint;
+		int input_count = start;
+		
+		while(p1_count < (midPoint - start + 1) && p2_count < (end - midPoint)){
+			if(input[p1_count] < input[p2_count]){
+				partitions[input_count] = input[p1_count];
+				input_count++;
+				p1_count++;
+				//printf("input count cond 1 %d\n", input_count);
+			}
+			else{
+				partitions[input_count] = input[p2_count];
+				input_count++;
+				p2_count++;
+				//printf("input count cond 2 %d\n", input_count);
+			}
+		}
+
+		while(p1_count < (midPoint - start + 1)){
+			partitions[input_count] = input[p1_count];
 			input_count++;
 			p1_count++;
+			//printf("input count cond 3 %d\n", input_count);
 		}
-		else{
-			input[input_count] = partition_2[p2_count];
+
+		while(p2_count < (end - midPoint)){
+			partitions[input_count] = input[midPoint+p2_count];
 			input_count++;
 			p2_count++;
+			//printf("input count cond 4 %d\n", input_count);
 		}
 	}
-
-	while(p1_count < (midPoint - start + 1)){
-		input[input_count] = partition_1[p1_count];
-		input_count++;
-		p1_count++;
-	}
-
-	while(p2_count < (end - midPoint)){
-		input[input_count] = partition_2[p2_count];
-		input_count++;
-		p2_count++;
-	}
-
 	return 0;
 }
 
@@ -125,9 +131,12 @@ int main(int argc, char** argv){
 	fclose(file);
 
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
-
+	
+	printArray(input, n);	
+	
 	my_sort(input, 0, n);
 
+	printArray(input, n);	
 	//check if it's sorted.
 	int sorted = is_sorted(input, n);
 	printf("Are the numbers sorted? %s \n", sorted ? "true" : "false");

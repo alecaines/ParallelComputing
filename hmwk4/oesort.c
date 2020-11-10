@@ -10,7 +10,7 @@ This function returns a pointer to an array with all the numbers in the file as 
 Sets *size to be the number of numbers
 */
 int64_t* Populate(char* fname, uint64_t* size){
-	ILE *file;
+	FILE *file;
 	file = fopen(fname, "r");
 	char *cap = NULL;
 	char *ptr;
@@ -89,6 +89,6 @@ int main(int argc, char** argv){
 	int sorted = is_sorted(output, n);
 	printf("Are the numbers sorted? %s \n", sorted ? "true" : "false");
 
-	printf("Time elapsed: %lf \n", time_diff);
+	//printf("Time elapsed: %lf \n", time_diff);
 	free(input);
 }
