@@ -55,7 +55,9 @@ int is_sorted(int64_t* input, uint64_t size){
 
 int merge(int64_t* input, int start, int midPoint, int end){
 
-
+	if((end - start) == 1){
+		return 0;
+	}
 	if((end - start) == 2){
 		if(input[start] < input[end]){
 			int64_t temp = input[start];
@@ -68,7 +70,7 @@ int merge(int64_t* input, int start, int midPoint, int end){
 
 		int64_t* partitions = malloc(sizeof(int64_t) * (end - start + 1));	
 
-		printArray(input, end - start + 1);
+		//printArray(input, end - start + 1);
 
 		int p1_count = start;
 		int p1_threshold = midPoint + 1;
@@ -80,17 +82,15 @@ int merge(int64_t* input, int start, int midPoint, int end){
 
 
 		while(p1_count < p1_threshold && p2_count < p2_threshold){
-			if(input[p1_count] <= input[p2_count]){
+			if(input[p1_count] < input[p2_count]){
 				partitions[input_count] = input[p1_count];
 				input_count++;
 				p1_count++;
-				//printf("input count cond 1 %d\n", input_count);
 			}
 			else{
 				partitions[input_count] = input[p2_count];
 				input_count++;
 				p2_count++;
-				//printf("input count cond 2 %d\n", input_count);
 			}
 		}
 
@@ -98,14 +98,12 @@ int merge(int64_t* input, int start, int midPoint, int end){
 			partitions[input_count] = input[p1_count];
 			input_count++;
 			p1_count++;
-			//printf("input count cond 3 %d\n", input_count);
 		}
 
 		while(p2_count < p2_threshold){
 			partitions[input_count] = input[p2_count];
 			input_count++;
 			p2_count++;
-			//printf("input count cond 4 %d\n", input_count);
 		}
 
 		for(int i = start; i < end; i++){
@@ -142,13 +140,15 @@ int main(int argc, char** argv){
 
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
 	
-	printf("before \n");
-	printArray(input, n);	
 	
+	my_sort(input, 0, n-1);
+	printf("n-1 \n");
+	printArray(input, n);	
+
 	my_sort(input, 0, n);
-	
-	printf("after \n");
+	printf("n \n");
 	printArray(input, n);	
+
 	//check if it's sorted.
 	int sorted = is_sorted(input, n);
 	printf("Are the numbers sorted? %s \n", sorted ? "true" : "false");
