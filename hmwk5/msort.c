@@ -30,11 +30,11 @@ int64_t* Populate(char* fname, uint64_t* size){
 }
 
 int printArray(int64_t* input, uint64_t size){
-	printf("\n----------------------------------\n");
+	printf("\n-----------------------------------------------------\n");
 	for(int i = 0; i < size; i++){
 		printf("% " PRId64 , input[i]);
 	}
-	printf("\n----------------------------------\n");
+	printf("\n-----------------------------------------------------\n");
 	return 0;
 }
 
@@ -54,54 +54,66 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int merge(int64_t* input, int start, int midPoint, int end){
-	
-	//printf("partition %d %d %d\n", start, midPoint, end);
 
-	int64_t* partitions = malloc(sizeof(int64_t) * (end - start + 1));	
 
-	//printArray(input, end - start + 1);
+	if((end - start) == 2){
+		if(input[start] < input[end]){
+			int64_t temp = input[start];
+			input[end] = input[start];
+			input[start] = temp;
+		}
+	}
+	else{	
+		//printf("partition %d %d %d\n", start, midPoint, end);
 
-	int p1_count = start;
-	int p2_count = midPoint + 1;
-	int input_count = 0;
+		int64_t* partitions = malloc(sizeof(int64_t) * (end - start + 1));	
 
-	int p1_threshold = midPoint + 1;
-	int p2_threshold = end;
+		printArray(input, end - start + 1);
 
-	while(p1_count < p1_threshold && p2_count < p2_threshold){
-		if(input[p1_count] < input[p2_count]){
+		int p1_count = start;
+		int p1_threshold = midPoint + 1;
+
+		int p2_count = midPoint + 1;
+		int p2_threshold = end;
+
+		int input_count = 0;
+
+
+		while(p1_count < p1_threshold && p2_count < p2_threshold){
+			if(input[p1_count] <= input[p2_count]){
+				partitions[input_count] = input[p1_count];
+				input_count++;
+				p1_count++;
+				//printf("input count cond 1 %d\n", input_count);
+			}
+			else{
+				partitions[input_count] = input[p2_count];
+				input_count++;
+				p2_count++;
+				//printf("input count cond 2 %d\n", input_count);
+			}
+		}
+
+		while(p1_count < p1_threshold){
 			partitions[input_count] = input[p1_count];
 			input_count++;
 			p1_count++;
-			//printf("input count cond 1 %d\n", input_count);
+			//printf("input count cond 3 %d\n", input_count);
 		}
-		else{
+
+		while(p2_count < p2_threshold){
 			partitions[input_count] = input[p2_count];
 			input_count++;
 			p2_count++;
-			//printf("input count cond 2 %d\n", input_count);
+			//printf("input count cond 4 %d\n", input_count);
 		}
-	}
 
-	while(p1_count < p1_threshold){
-		partitions[input_count] = input[p1_count];
-		input_count++;
-		p1_count++;
-		//printf("input count cond 3 %d\n", input_count);
-	}
+		for(int i = start; i < end; i++){
+			input[i] = partitions[i - start];
+		}
 
-	while(p2_count < p2_threshold){
-		partitions[input_count] = input[p2_count];
-		input_count++;
-		p2_count++;
-		//printf("input count cond 4 %d\n", input_count);
+		free(partitions);
 	}
-
-	for(int i = start; i < end; i++){
-		input[i] = partitions[i - start];
-	}
-
-	free(partitions);
 
 	return 0;
 }
