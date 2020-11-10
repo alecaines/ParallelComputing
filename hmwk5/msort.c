@@ -55,73 +55,61 @@ int is_sorted(int64_t* input, uint64_t size){
 
 int merge(int64_t* input, int start, int midPoint, int end){
 
-	if((end - start) == 1){
-		return 0;
-	}
-	if((end - start) == 2){
-		if(input[start] < input[end]){
-			int64_t temp = input[start];
-			input[end] = input[start];
-			input[start] = temp;
-		}
-	}
-	else{	
-		//printf("partition %d %d %d\n", start, midPoint, end);
+	printf("partition %d %d %d\n", start, midPoint, end);
+	int64_t* partitions = malloc(sizeof(int64_t) * (end - start + 1));	
 
-		int64_t* partitions = malloc(sizeof(int64_t) * (end - start + 1));	
+	//printArray(input, end - start + 1);
 
-		//printArray(input, end - start + 1);
+	int p1_count = start;
+	int p1_threshold = midPoint;
 
-		int p1_count = start;
-		int p1_threshold = midPoint + 1;
+	int p2_count = midPoint + 1;
+	int p2_threshold = end;
 
-		int p2_count = midPoint + 1;
-		int p2_threshold = end;
-
-		int input_count = 0;
+	int input_count = 0;
 
 
-		while(p1_count < p1_threshold && p2_count < p2_threshold){
-			if(input[p1_count] < input[p2_count]){
-				partitions[input_count] = input[p1_count];
-				input_count++;
-				p1_count++;
-			}
-			else{
-				partitions[input_count] = input[p2_count];
-				input_count++;
-				p2_count++;
-			}
-		}
-
-		while(p1_count < p1_threshold){
+	while(p1_count <= p1_threshold && p2_count <= p2_threshold){
+		if(input[p1_count] < input[p2_count]){
 			partitions[input_count] = input[p1_count];
 			input_count++;
 			p1_count++;
 		}
-
-		while(p2_count < p2_threshold){
+		else{
 			partitions[input_count] = input[p2_count];
 			input_count++;
 			p2_count++;
 		}
-
-		for(int i = start; i < end; i++){
-			input[i] = partitions[i - start];
-		}
-
-		free(partitions);
 	}
+
+	while(p1_count <= p1_threshold){
+		partitions[input_count] = input[p1_count];
+		input_count++;
+		p1_count++;
+	}
+
+	while(p2_count <= p2_threshold){
+		partitions[input_count] = input[p2_count];
+		input_count++;
+		p2_count++;
+	}
+
+	for(int i = start; i <= end; i++){
+		input[i] = partitions[i - start];
+	}
+
+	free(partitions);
 
 	return 0;
 }
 
 int my_sort(int64_t* input, uint64_t start, uint64_t end){
 	if(start < end){
-		int midPoint = start + (end - start)/2;
+		int midPoint = (end - start)/2;
 		my_sort(input, start, midPoint);
 		my_sort(input, midPoint+1, end);
 		merge(input, start, midPoint, end);
+
 	}
 
 	return 0;
