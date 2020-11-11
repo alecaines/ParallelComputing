@@ -55,8 +55,8 @@ int is_sorted(int64_t* input, uint64_t size){
 
 int merge(int64_t* input, int start, int midPoint, int end){
 
-	printf("partition %d %d %d\n", start, midPoint, end);
-	printArray(input, end - start + 1);
+	//printf("partition %d %d %d\n", start, midPoint, end);
+	//printArray(input, end - start + 1);
 	
 	int p1_count = start;
 	int p1_threshold = midPoint;
@@ -97,7 +97,7 @@ int merge(int64_t* input, int start, int midPoint, int end){
 		input[start + i] = partitions[i];
 	}
 
-	printArray(input, end - start + 1);
+	//printArray(input, end - start + 1);
 
 	free(partitions);
 

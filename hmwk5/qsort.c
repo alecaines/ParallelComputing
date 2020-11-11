@@ -100,9 +100,9 @@ int main(int argc, char** argv){
 
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
 	
-	printArray(input, n);
+	//printArray(input, n);
 	my_sort(input, 0, n);
-	printArray(input, n);
+	//printArray(input, n);
 
 	//check if it's sorted.
 	int sorted = is_sorted(input, n);
