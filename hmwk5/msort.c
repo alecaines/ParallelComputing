@@ -129,14 +129,7 @@ int main(int argc, char** argv){
 
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
 	
-	
-	my_sort(input, 0, n-1);
-	printf("n-1 \n");
-	printArray(input, n);	
-
 	my_sort(input, 0, n);
-	printf("n \n");
-	printArray(input, n);	
 
 	//check if it's sorted.
 	int sorted = is_sorted(input, n);

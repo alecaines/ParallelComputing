@@ -29,15 +29,20 @@ int64_t* Populate(char* fname, uint64_t* size){
 	return array;
 }
 
+int printArray(int64_t* input, uint64_t size){
+	printf("\n----------------------------------------------\n");
+		for(int i = 0; i < size; i++){
+			printf("% " PRId64, input[i]);
+		}
+	printf("\n----------------------------------------------\n");
+	return 0;
+}
+
 /*
 Suggested function to write, to check whether the array is sorted
 Returns 0 if not sorted, returns 1 if sorted
 */
 int is_sorted(int64_t* input, uint64_t size){
-
-	for(uint64_t i = 0; i < size-1; i++){
-		printf("%" PRId64 "\n", input[i]);
-	}
 
 	for(uint64_t i = 0; i < size-1; i++){
 		if(input[i] > input[i+1]){
@@ -48,29 +53,28 @@ int is_sorted(int64_t* input, uint64_t size){
 }
 
 int partition(int64_t* input, int start, int end){
-	int pi = (rand() % (end - start)) + start; 
-	int64_t pivotPoint = input[pi];
-
-	printf("%d %d %d\n", start, pi, end);
-
-	for(int i = start; i <= end; i++){
-		if(input[i] > pivotPoint){
-			start+=1;
-			int64_t temp = input[start];
-			input[start] = input[i];
-			input[i] = temp; 
+	//printf("start %d end %d\n", start, end);
+	//int pi = (rand() % (end - start)) + start; 
+	//int64_t pivotPoint = input[pi];
+	int64_t pivotPoint = input[end];
+	int i = start - 1;
+	for(int j = start; j <= end - 1; j++){
+		if(input[j] < pivotPoint){
+			i++;
+			int64_t temp = input[i];
+			input[i] = input[j];
+			input[j] = temp;
 		}
 	}
-
-	int64_t temp = input[start];
-	input[start] = input[end];
-	input[end] = temp; 
-
-	return start;	
+	int64_t temp2 = input[i+1];
+	input[i+1] = input[end];
+	input[end] = temp2;
+	
+	return i + 1;	
 
 }
 
-int my_sort(int64_t* input, uint64_t start, uint64_t end){
+int my_sort(int64_t* input, int start, int end){
 	if (start >= end){
 		return 0;
 	}	
@@ -95,8 +99,10 @@ int main(int argc, char** argv){
 	fclose(file);
 
 	int64_t* input = Populate("./numbers.txt", &n); //gets the array
-
+	
+	printArray(input, n);
 	my_sort(input, 0, n);
+	printArray(input, n);
 
 	//check if it's sorted.
 	int sorted = is_sorted(input, n);
